@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Student Quiz Portal</title>
+    <!-- Google Fonts: Poppins for a modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables for easy theme customization */
+        :root {
+            --primary-color: #007bff; /* नीले रंग का मुख्य रंग */
+            --secondary-color: #6c757d; /* ग्रे रंग का सहायक रंग */
+            --success-color: #28a745; /* हरे रंग का सफलता का रंग */
+            --danger-color: #dc3545; /* लाल रंग का खतरे का रंग */
+            --info-color: #17a2b8; /* नीले-हरे रंग का जानकारी का रंग */
+            --light-bg: #f8f9fa; /* हल्का पृष्ठभूमि रंग */
+            --dark-text: #343a40; /* गहरा टेक्स्ट रंग */
+            --border-color: #dee2e6; /* बॉर्डर का रंग */
+            --card-bg: #ffffff; /* कार्ड की पृष्ठभूमि */
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1); /* हल्की छाया */
+            --shadow-medium: 0 8px 15px rgba(0, 0, 0, 0.15); /* मध्यम छाया */
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* ऊपर से शुरू करें */
+            min-height: 100vh; /* कम से कम पूरी ऊंचाई */
+            box-sizing: border-box; /* पैडिंग और बॉर्डर को चौड़ाई में शामिल करें */
+        }
+
+        .container {
+            max-width: 900px; /* अधिकतम चौड़ाई */
+            width: 100%; /* पूरी चौड़ाई */
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px; /* गोल कोने */
+            box-shadow: var(--shadow-medium); /* मध्यम छाया */
+            text-align: center;
+            position: relative;
+        }
+
+        /* Logo Styling */
+        .logo-container {
+            margin-bottom: 20px; /* Logo aur heading ke beech space */
+            text-align: center;
+        }
+
+        .logo {
+            max-width: 150px; /* Logo ki adhiktam चौड़ाई */
+            height: auto; /* Anupat banae rakhne ke liye height auto */
+            border-radius: 8px; /* Logo ke liye thode gol kone */
+            box-shadow: var(--shadow-light); /* Logo ke liye halki shadow */
+        }
+
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            font-weight: 700; /* मोटा फ़ॉन्ट */
+            font-size: 2.5em; /* बड़ा फ़ॉन्ट */
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: 600;
+            font-size: 1.8em;
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        /* Common styles for different screens (category, quiz, score) */
+        .category-selection, .quiz-section, .score-section {
+            padding: 25px;
+            border-radius: 10px;
+            background-color: var(--light-bg);
+            border: 1px solid var(--border-color);
+            margin-top: 25px;
+            box-shadow: var(--shadow-light);
+        }
+
+        .category-buttons {
+            display: flex;
+            flex-wrap: wrap; /* बटन को नई लाइन पर जाने दें */
+            gap: 15px; /* बटन के बीच की जगह */
+            justify-content: center; /* बटन को केंद्र में लाएं */
+            margin-top: 20px;
+        }
+
+        .category-btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease; /* सहज ट्रांजीशन */
+            box-shadow: var(--shadow-light);
+        }
+
+        .category-btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .quiz-section {
+            display: none; /* शुरुआत में छिपा हुआ */
+            text-align: left;
+        }
+
+        .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow-light);
+        }
+
+        .question p {
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 1.15em;
+            color: var(--dark-text);
+        }
+
+        .options label {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px 15px;
+            background-color: var(--light-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+            font-size: 1em;
+            display: flex;
+            align-items: center; /* अलाइन आइटम */
+        }
+
+        .options label:hover {
+            background-color: #e9ecef;
+            border-color: var(--primary-color);
+        }
+
+        .options input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2); /* रेडियो बटन को थोड़ा बड़ा करें */
+        }
+
+        .submit-btn, .restart-btn {
+            display: block;
+            width: 100%;
+            padding: 12px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: var(--shadow-light);
+        }
+
+        .submit-btn:hover, .restart-btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .restart-btn {
+            background-color: var(--info-color); /* रीस्टार्ट बटन के लिए अलग रंग */
+        }
+        .restart-btn:hover {
+             background-color: #138496;
+        }
+
+        .score-section {
+            display: none; /* शुरुआत में छिपा हुआ */
+            text-align: center;
+        }
+
+        .score-section p {
+            font-size: 1.4em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--success-color);
+        }
+
+        .score-section p span {
+            color: var(--primary-color);
+        }
+
+        .correct-answers {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        .correct-answers h3 {
+            color: var(--success-color);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .correct-answers ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .correct-answers ul li {
+            margin-bottom: 12px;
+            padding: 10px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.95em;
+        }
+        .correct-answers ul li strong {
+            color: var(--dark-text);
+        }
+        .correct-answers ul li .your-answer {
+            color: var(--secondary-color);
+        }
+        .correct-answers ul li .correct-answer-text {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+
+        .timer {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: var(--danger-color);
+            margin-bottom: 15px;
+            padding: 8px 15px;
+            background-color: rgba(220, 53, 69, 0.1); /* हल्के लाल रंग की पृष्ठभूमि */
+            border-radius: 5px;
+            display: inline-block; /* टेक्स्ट के अनुसार चौड़ाई */
+        }
+
+        /* Past Scores section styling */
+        .past-scores {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--border-color);
+            text-align: left;
+        }
+
+        .past-scores h3 {
+            color: var(--info-color);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .past-scores ul {
+            list-style-type: disc; /* Bullet points for list */
+            padding-left: 20px;
+        }
+
+        .past-scores ul li {
+            margin-bottom: 8px;
+            background-color: transparent; /* Override card-bg */
+            border: none; /* Override border */
+            box-shadow: none; /* Override shadow */
+        }
+
+
+        /* Responsive Design for smaller screens */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 20px;
+                margin: 0; /* मोबाइल पर मार्जिन हटा दें */
+            }
+            h1 {
+                font-size: 2em;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+            .category-btn {
+                width: 100%; /* मोबाइल पर पूरी चौड़ाई */
+                padding: 10px;
+                font-size: 1em;
+            }
+            .question p {
+                font-size: 1em;
+            }
+            .options label {
+                padding: 8px 10px;
+            }
+            .submit-btn, .restart-btn {
+                font-size: 1.1em;
+            }
+            .logo {
+                max-width: 100px; /* मोबाइल पर लोगो को थोड़ा छोटा करें */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Logo Container -->
+        <div class="logo-container">
+            <img src="K:\ONLINE WORK\Website\Quiz\logo.png" alt="Quiz Portal Logo" class="logo">
+        </div>
+
+        <h1>क्विज़ पोर्टल में आपका स्वागत है!</h1>
+        <p id="main-instruction">अपना क्विज़ शुरू करने के लिए एक श्रेणी चुनें।</p>
+
+        <!-- श्रेणी चयन स्क्रीन (Category Selection Screen) -->
+        <div class="category-selection" id="category-selection-screen">
+            <h2>एक क्विज़ श्रेणी चुनें</h2>
+            <div class="category-buttons">
+                <!-- Buttons will be dynamically generated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- क्विज़ सेक्शन (शुरुआत में छिपा हुआ) (Quiz Section - hidden initially) -->
+        <div class="quiz-section" id="quiz-screen">
+            <h2 id="quiz-title"></h2>
+            <div class="timer">समय शेष: <span id="time-left"></span>s</div>
+            <form id="currentQuizForm"></form>
+            <button type="submit" class="submit-btn" id="submitQuizBtn">क्विज़ सबमिट करें</button>
+        </div>
+
+        <!-- स्कोर सेक्शन (शुरुआत में छिपा हुआ) (Score Section - hidden initially) -->
+        <div class="score-section" id="score-screen">
+            <h2>क्विज़ परिणाम</h2>
+            <p>आपका स्कोर: <span id="final-score-display">0</span>/<span id="total-questions-display">5</span></p>
+            <div class="correct-answers">
+                <h3>सही उत्तर:</h3>
+                <ul id="correct-answers-list"></ul>
+            </div>
+            <button class="restart-btn" id="restartQuizBtn">एक और क्विज़ लें</button>
+            <div class="past-scores" id="past-scores-display">
+                <h3>पिछला स्कोर इतिहास:</h3>
+                <ul id="past-scores-list"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // सभी क्विज़ डेटा यहाँ JavaScript ऑब्जेक्ट के रूप में परिभाषित है
+        const quizzesData = {
+            literature: {
+                title: "कला एवं संस्कृति क्विज़",
+                timeLimit: 600,
+                questions: [
+					  { q: "भरतनाट्यम नृत्य शैली किस राज्य की है?", options: ["केरल", "कर्नाटक", "तमिलनाडु", "आंध्र प्रदेश"], ans: "तमिलनाडु" },
+					  { q: "कथकली नृत्य किस राज्य से संबंधित है?", options: ["कर्नाटक", "केरल", "तमिलनाडु", "ओडिशा"], ans: "केरल" },
+					  { q: "संगीत के तीन मुख्य अंग कौन से हैं?", options: ["नृत्य, चित्र, नाट्य", "गान, वादन, नृत्य", "कला, संगीत, साहित्य", "कविता, गान, ताल"], ans: "गान, वादन, नृत्य" },
+					  { q: "नटराज की मूर्ति किस देवता का प्रतीक है?", options: ["ब्रह्मा", "विष्णु", "शिव", "इंद्र"], ans: "शिव" },
+					  { q: "कथक नृत्य का संबंध किस राज्य से है?", options: ["उत्तर प्रदेश", "गुजरात", "पंजाब", "बिहार"], ans: "उत्तर प्रदेश" },
+					  { q: "मोहिनीअट्टम किस राज्य की शास्त्रीय नृत्य शैली है?", options: ["तमिलनाडु", "कर्नाटक", "ओडिशा", "केरल"], ans: "केरल" },
+					  { q: "बृहदेश्वर मंदिर कहाँ स्थित है?", options: ["कांचीपुरम", "थंजावुर", "मदुरै", "महाबलीपुरम"], ans: "थंजावुर" },
+					  { q: "संगीत सम्राट तानसेन किस दरबार में थे?", options: ["अकबर", "शेरशाह", "हुमायूँ", "औरंगज़ेब"], ans: "अकबर" },
+					  { q: "भील जनजाति का प्रमुख लोकनृत्य कौन सा है?", options: ["घूमर", "गरबा", "गवरी", "रासलीला"], ans: "गवरी" },
+					  { q: "मीनाकारी कला किससे संबंधित है?", options: ["कपड़ा", "धातु", "चित्रकला", "पत्थर"], ans: "धातु" },
+					  { q: "संज्ञा चित्रकला किस क्षेत्र से संबंधित है?", options: ["गोंड", "मधुबनी", "वारली", "कांगड़ा"], ans: "कांगड़ा" },
+					  { q: "किस ग्रंथ में नाट्यशास्त्र की रचना मानी जाती है?", options: ["अभिज्ञान शाकुंतलम", "नाट्यशास्त्र", "ध्वन्यालोक", "गीतगोविंद"], ans: "नाट्यशास्त्र" },
+					  { q: "‘अजन्ता की गुफाएँ’ किस राज्य में हैं?", options: ["मध्य प्रदेश", "महाराष्ट्र", "गुजरात", "राजस्थान"], ans: "महाराष्ट्र" },
+					  { q: "रवींद्रनाथ टैगोर ने किस भारतीय कला विद्यालय की स्थापना की?", options: ["कलाभवन, शांति निकेतन", "चित्रकला परिषद", "JJ स्कूल ऑफ आर्ट्स", "विश्व कला विद्यालय"], ans: "कलाभवन, शांति निकेतन" },
+					  { q: "भारत के किस राज्य की कला ‘पटचित्र’ प्रसिद्ध है?", options: ["बिहार", "ओडिशा", "पश्चिम बंगाल", "उत्तर प्रदेश"], ans: "ओडिशा" },
+					  { q: "रासलीला किस देवता के जीवन पर आधारित है?", options: ["राम", "शिव", "कृष्ण", "हनुमान"], ans: "कृष्ण" },
+					  { q: "संगीत के दो प्रमुख प्रकार कौन से हैं?", options: ["लोक और शास्त्रीय", "हिंदी और अंग्रेज़ी", "नृत्य और गीत", "वादन और गायन"], ans: "लोक और शास्त्रीय" },
+					  { q: "‘कुम्भ मेला’ कितने वर्षों में एक बार लगता है?", options: ["3", "6", "10", "12"], ans: "12" },
+					  { q: "‘सितार’ वाद्ययंत्र किस श्रेणी में आता है?", options: ["तंतु वाद्य", "घन वाद्य", "सूषिर वाद्य", "अवनद्ध वाद्य"], ans: "तंतु वाद्य" },
+					  { q: "‘कुचिपुड़ी’ किस राज्य का शास्त्रीय नृत्य है?", options: ["आंध्र प्रदेश", "केरल", "कर्नाटक", "तमिलनाडु"], ans: "आंध्र प्रदेश" },
+					  { q: "भील जनजाति किस राज्य में पाई जाती है?", options: ["उत्तर प्रदेश", "राजस्थान", "बिहार", "पश्चिम बंगाल"], ans: "राजस्थान" },
+					  { q: "संत तुकाराम किस भाषा में भक्ति गीत लिखते थे?", options: ["संस्कृत", "तमिल", "मराठी", "गुजराती"], ans: "मराठी" },
+					  { q: "‘नवरात्रि’ उत्सव में कौन सा लोकनृत्य किया जाता है?", options: ["घूमर", "डांडिया", "छऊ", "कालबेलिया"], ans: "डांडिया" },
+					  { q: "‘भवाई’ किस राज्य का लोकनाट्य है?", options: ["महाराष्ट्र", "गुजरात", "बिहार", "पंजाब"], ans: "गुजरात" },
+					  { q: "‘मधुबनी चित्रकला’ किस राज्य से संबंधित है?", options: ["बिहार", "पश्चिम बंगाल", "उत्तर प्रदेश", "झारखंड"], ans: "बिहार" },
+					  { q: "‘लोक नाट्य यक्षगान’ किस राज्य में प्रचलित है?", options: ["कर्नाटक", "महाराष्ट्र", "केरल", "ओडिशा"], ans: "कर्नाटक" },
+					  { q: "‘कालबेलिया’ नृत्य किस समुदाय से संबंधित है?", options: ["राजस्थानी", "पंजाबी", "गुजराती", "बंगाली"], ans: "राजस्थानी" },
+					  { q: "‘लावणी’ किस राज्य का पारंपरिक नृत्य है?", options: ["पंजाब", "महाराष्ट्र", "गुजरात", "बिहार"], ans: "महाराष्ट्र" },
+					  { q: "‘वारली पेंटिंग’ किस राज्य की प्रसिद्ध लोककला है?", options: ["महाराष्ट्र", "मध्य प्रदेश", "गुजरात", "राजस्थान"], ans: "महाराष्ट्र" },
+					  { q: "‘भांगड़ा’ नृत्य किस राज्य का है?", options: ["हरियाणा", "उत्तर प्रदेश", "पंजाब", "राजस्थान"], ans: "पंजाब" },
+					  { q: "‘संगीत रत्नाकर’ ग्रंथ के लेखक कौन हैं?", options: ["भारत मुनि", "शारंगदेव", "कालिदास", "जयदेव"], ans: "शारंगदेव" },
+					  { q: "‘संगीत नाटक अकादमी’ की स्थापना कब हुई थी?", options: ["1952", "1954", "1956", "1950"], ans: "1953" },
+					  { q: "‘गजल’ किस प्रकार का गायन है?", options: ["लोक", "शास्त्रीय", "सूफी", "नज्म"], ans: "सूफी" },
+					  { q: "‘बृज’ क्षेत्र किस देवता से जुड़ा है?", options: ["राम", "कृष्ण", "शिव", "हनुमान"], ans: "कृष्ण" },
+					  { q: "‘तंजावुर पेंटिंग’ किस राज्य से संबंधित है?", options: ["केरल", "कर्नाटक", "तमिलनाडु", "तेलंगाना"], ans: "तमिलनाडु" },
+					  { q: "किस राजा ने अजंता की गुफाओं का निर्माण कराया था?", options: ["अशोक", "हर्षवर्धन", "गुप्त शासक", "सातवाहन"], ans: "सातवाहन" },
+					  { q: "भारत में सबसे अधिक लोकनृत्य किस राज्य में पाए जाते हैं?", options: ["राजस्थान", "महाराष्ट्र", "उत्तर प्रदेश", "ओडिशा"], ans: "राजस्थान" },
+					  { q: "‘वीणा’ किस प्रकार का वाद्ययंत्र है?", options: ["अवनद्ध", "घन", "सूषिर", "तंतु"], ans: "तंतु" },
+					  { q: "‘गीतगोविंद’ किस कवि की रचना है?", options: ["जयदेव", "कालिदास", "भवभूति", "तुलसीदास"], ans: "जयदेव" },
+					  { q: "‘नाट्यशास्त्र’ किसके द्वारा लिखा गया था?", options: ["शारंगदेव", "भरत मुनि", "जयदेव", "तुलसीदास"], ans: "भरत मुनि" },
+					  { q: "‘डोलू कुनिता’ किस राज्य का नृत्य है?", options: ["कर्नाटक", "केरल", "तेलंगाना", "आंध्र प्रदेश"], ans: "कर्नाटक" },
+					  { q: "‘सतरिया’ नृत्य किस राज्य से जुड़ा है?", options: ["बिहार", "असम", "त्रिपुरा", "मणिपुर"], ans: "असम" },
+					  { q: "‘कुम्हार’ किस कला से जुड़े होते हैं?", options: ["लकड़ी", "कपड़ा", "मिट्टी", "पत्थर"], ans: "मिट्टी" },
+					  { q: "‘छऊ नृत्य’ किस राज्य से संबंधित है?", options: ["पश्चिम बंगाल", "झारखंड", "ओडिशा", "सभी"], ans: "सभी" },
+					  { q: "‘नंदलाल बोस’ किस विधा के प्रसिद्ध कलाकार थे?", options: ["शास्त्रीय संगीत", "चित्रकला", "नृत्य", "नाटक"], ans: "चित्रकला" },
+					  { q: "‘लोकगीत आल्हा’ किस क्षेत्र से संबंधित है?", options: ["उत्तर प्रदेश", "गुजरात", "बिहार", "राजस्थान"], ans: "उत्तर प्रदेश" },
+					  { q: "‘चरी नृत्य’ किस राज्य का प्रसिद्ध लोकनृत्य है?", options: ["राजस्थान", "पंजाब", "गुजरात", "हरियाणा"], ans: "राजस्थान" },
+					  { q: "‘शब्द’ और ‘नाद’ का संबंध किससे है?", options: ["वर्णमाला", "कला", "संगीत", "चित्र"], ans: "संगीत" },
+					  { q: "‘कालबेलिया’ किस समुदाय की नृत्य परंपरा है?", options: ["भील", "सपेरा", "मीणा", "राजपूत"], ans: "सपेरा" },
+					  { q: "‘छऊ नृत्य’ में प्रयुक्त मुखौटे किस सामग्री से बनाए जाते हैं?", options: ["लकड़ी", "कागज-माशा", "धातु", "पत्थर"], ans: "कागज-माशा" }
+
+                ]
+            },
+            
+        };
+
+        // HTML तत्वों के संदर्भ (References to HTML elements)
+        const categorySelectionScreen = document.getElementById('category-selection-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const scoreScreen = document.getElementById('score-screen');
+        const quizTitle = document.getElementById('quiz-title');
+        const currentQuizForm = document.getElementById('currentQuizForm');
+        const submitQuizBtn = document.getElementById('submitQuizBtn');
+        const restartQuizBtn = document.getElementById('restartQuizBtn');
+        const finalScoreDisplay = document.getElementById('final-score-display');
+        const totalQuestionsDisplay = document.getElementById('total-questions-display');
+        const correctAnswersList = document.getElementById('correct-answers-list');
+        const timeLeftSpan = document.getElementById('time-left');
+        const mainInstruction = document.getElementById('main-instruction');
+        const categoryButtonsContainer = document.querySelector('.category-buttons');
+        const pastScoresList = document.getElementById('past-scores-list');
+
+        let currentQuizCategory = ''; // वर्तमान क्विज़ श्रेणी
+        let timerInterval; // टाइमर इंटरवल आईडी
+        let timeRemaining; // शेष समय
+        let selectedAnswers = {}; // उपयोगकर्ता द्वारा चुने गए उत्तरों को स्टोर करने के लिए
+        let displayedQuestionsOrder = []; // प्रदर्शित प्रश्नों के क्रम को स्टोर करने के लिए
+
+        // --- सहायक फ़ंक्शन (Utility Functions) ---
+
+        // एक सरणी को शफ़ल करने का फ़ंक्शन (Fisher-Yates algorithm)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // --- क्विज़ प्रवाह फ़ंक्शन (Quiz Flow Functions) ---
+
+        // श्रेणी बटन को गतिशील रूप से उत्पन्न करने का फ़ंक्शन
+        function generateCategoryButtons() {
+            categoryButtonsContainer.innerHTML = ''; // मौजूदा बटन साफ़ करें
+            for (const category in quizzesData) {
+                const button = document.createElement('button');
+                button.classList.add('category-btn');
+                button.setAttribute('data-category', category);
+                button.textContent = quizzesData[category].title.replace(' क्विज़', ''); // 'क्विज़' शब्द हटाकर श्रेणी का नाम प्रदर्शित करें
+                button.addEventListener('click', () => {
+                    startQuiz(category); // बटन क्लिक पर क्विज़ शुरू करें
+                });
+                categoryButtonsContainer.appendChild(button);
+            }
+        }
+
+        // क्विज़ शुरू करने का फ़ंक्शन
+        function startQuiz(category) {
+            currentQuizCategory = category;
+            const quizData = quizzesData[category];
+
+            if (!quizData) {
+                console.error("इस श्रेणी के लिए क्विज़ डेटा नहीं मिला:", category);
+                return;
+            }
+
+            // नए क्विज़ के लिए चुने गए उत्तरों और प्रदर्शित प्रश्नों के क्रम को रीसेट करें
+            selectedAnswers = {};
+            displayedQuestionsOrder = [];
+
+            // प्रश्नों को शफ़ल करें
+            const shuffledQuestions = shuffleArray([...quizData.questions]);
+            displayedQuestionsOrder = shuffledQuestions; // शफ़ल किए गए क्रम को स्टोर करें
+
+            quizTitle.textContent = quizData.title; // क्विज़ शीर्षक सेट करें
+            currentQuizForm.innerHTML = ''; // पिछले प्रश्नों को साफ़ करें
+
+            // प्रत्येक शफ़ल किए गए प्रश्न के लिए HTML उत्पन्न करें
+            displayedQuestionsOrder.forEach((qData, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+
+                const questionP = document.createElement('p');
+                // LaTeX गणितीय अभिव्यक्तियों के लिए innerHTML का उपयोग करें
+                questionP.innerHTML = `${index + 1}. ${qData.q}`;
+                questionDiv.appendChild(questionP);
+
+                const optionsDiv = document.createElement('div');
+                optionsDiv.classList.add('options');
+
+                // विकल्पों को शफ़ल करें
+                const shuffledOptions = shuffleArray([...qData.options]);
+
+                shuffledOptions.forEach((optionText) => {
+                    const label = document.createElement('label');
+                    const radio = document.createElement('input');
+                    radio.type = 'radio';
+                    radio.name = `q${index}`; // प्रत्येक प्रश्न समूह के लिए अद्वितीय नाम
+                    radio.value = optionText; // पूर्ण विकल्प टेक्स्ट को मान के रूप में स्टोर करें
+                    radio.addEventListener('change', (e) => {
+                        selectedAnswers[index] = e.target.value; // इस प्रश्न इंडेक्स के लिए चुने गए उत्तर को स्टोर करें
+                    });
+
+                    label.appendChild(radio);
+                    label.appendChild(document.createTextNode(optionText));
+                    optionsDiv.appendChild(label);
+                });
+
+                questionDiv.appendChild(optionsDiv);
+                currentQuizForm.appendChild(questionDiv);
+            });
+
+            // श्रेणी चयन को छिपाएं, क्विज़ दिखाएं
+            categorySelectionScreen.style.display = 'none';
+            mainInstruction.style.display = 'none';
+            quizScreen.style.display = 'block';
+            scoreScreen.style.display = 'none'; // सुनिश्चित करें कि स्कोर स्क्रीन छिपी हुई है
+
+            // टाइमर शुरू करें
+            startTimer(quizData.timeLimit);
+        }
+
+        // टाइमर शुरू करने का फ़ंक्शन
+        function startTimer(duration) {
+            clearInterval(timerInterval); // किसी भी मौजूदा टाइमर को साफ़ करें
+            timeRemaining = duration;
+            timeLeftSpan.textContent = timeRemaining;
+
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                timeLeftSpan.textContent = timeRemaining;
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    submitQuiz(); // समय समाप्त होने पर स्वतः सबमिट करें
+                    // alert की जगह कस्टम मैसेज दिखाएं
+                    const messageBox = document.createElement('div');
+                    messageBox.style.cssText = `
+                        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                        background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;
+                        padding: 20px; border-radius: 8px; z-index: 1000; box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                    `;
+                    messageBox.innerHTML = `<strong>समय समाप्त हो गया है!</strong> आपका क्विज़ सबमिट कर दिया गया है।`;
+                    document.body.appendChild(messageBox);
+                    setTimeout(() => messageBox.remove(), 3000); // 3 सेकंड बाद मैसेज हटा दें
+                }
+            }, 1000);
+        }
+
+        // क्विज़ सबमिट करने का फ़ंक्शन
+        function submitQuiz() {
+            clearInterval(timerInterval); // टाइमर रोकें
+
+            const quizData = quizzesData[currentQuizCategory];
+            let score = 0;
+            const correctAnswersHtml = [];
+            const totalQuestions = displayedQuestionsOrder.length;
+
+            // प्रत्येक प्रश्न के लिए स्कोर की गणना करें और सही उत्तर HTML जेनरेट करें
+            displayedQuestionsOrder.forEach((qData, index) => {
+                const correctAnswer = qData.ans;
+                const questionText = qData.q;
+                const userSelectedAnswer = selectedAnswers[index] || "उत्तर नहीं दिया गया"; // यदि कोई उत्तर नहीं चुना गया है
+
+                let isCorrect = (userSelectedAnswer === correctAnswer);
+                if (isCorrect) {
+                    score++;
+                }
+
+                correctAnswersHtml.push(`
+                    <li>
+                        <strong>${index + 1}. ${questionText}</strong> <br>
+                        <span class="your-answer">आपका उत्तर: ${userSelectedAnswer}</span>
+                        <span style="color: ${isCorrect ? 'var(--success-color)' : 'var(--danger-color)'}; font-weight: 600;">(${isCorrect ? 'सही' : 'गलत'})</span><br>
+                        <span class="correct-answer-text">सही उत्तर: ${correctAnswer}</span>
+                    </li>
+                `);
+            });
+
+            finalScoreDisplay.textContent = score; // अंतिम स्कोर प्रदर्शित करें
+            totalQuestionsDisplay.textContent = totalQuestions; // कुल प्रश्नों की संख्या प्रदर्शित करें
+            correctAnswersList.innerHTML = correctAnswersHtml.join(''); // सही उत्तरों की सूची प्रदर्शित करें
+
+            // स्कोर को लोकल स्टोरेज में सेव करें
+            saveScoreToLocalStorage(currentQuizCategory, score, totalQuestions);
+            displayPastScores(currentQuizCategory); // पिछला स्कोर इतिहास प्रदर्शित करें
+
+            // क्विज़ को छिपाएं, स्कोर दिखाएं
+            quizScreen.style.display = 'none';
+            scoreScreen.style.display = 'block';
+        }
+
+        // क्विज़ रीस्टार्ट करने का फ़ंक्शन
+        function restartQuiz() {
+    scoreScreen.style.display = 'none';
+    startQuiz('literature');//--- Change here category to start quiz default ---
+}
+
+        // --- लोकल स्टोरेज फ़ंक्शन (Local Storage Functions) ---
+
+        // स्कोर को लोकल स्टोरेज में सेव करें
+        function saveScoreToLocalStorage(category, score, total) {
+            // 'quizScores' नामक एक मुख्य कुंजी के तहत सभी क्विज़ के स्कोर को स्टोर करें
+            const scores = JSON.parse(localStorage.getItem('quizScores')) || {};
+            if (!scores[category]) {
+                scores[category] = []; // यदि श्रेणी मौजूद नहीं है तो एक नया सरणी बनाएं
+            }
+            const timestamp = new Date().toLocaleString('hi-IN'); // वर्तमान दिनांक और समय (भारतीय स्थानीय सेटिंग में)
+            scores[category].push({ score: score, total: total, timestamp: timestamp });
+            localStorage.setItem('quizScores', JSON.stringify(scores));
+            console.log(`स्कोर सहेजा गया: श्रेणी - ${category}, स्कोर - ${score}/${total}`);
+        }
+
+        // पिछले स्कोर इतिहास को प्रदर्शित करें
+        function displayPastScores(category) {
+            const scores = JSON.parse(localStorage.getItem('quizScores')) || {};
+            const categoryScores = scores[category] || [];
+            pastScoresList.innerHTML = ''; // पिछले स्कोर सूची को साफ़ करें
+
+            if (categoryScores.length === 0) {
+                pastScoresList.innerHTML = '<li>कोई पिछला स्कोर नहीं मिला।</li>';
+            } else {
+                // Display latest 5 scores if many, or all if less than 5
+                const scoresToDisplay = categoryScores.slice(-5); // Get the last 5 entries
+
+                scoresToDisplay.forEach((s, index) => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `प्रयास ${categoryScores.length - scoresToDisplay.length + index + 1}: ${s.score}/${s.total} दिनांक ${s.timestamp}`;
+                    pastScoresList.appendChild(listItem);
+                });
+            }
+        }
+
+        // --- इवेंट लिसनर (Event Listeners) ---
+
+        // क्विज़ सबमिट बटन
+        submitQuizBtn.addEventListener('click', submitQuiz);
+
+        // क्विज़ रीस्टार्ट बटन
+        restartQuizBtn.addEventListener('click', restartQuiz);
+
+        // पेज लोड होने पर: श्रेणी बटन जेनरेट करें
+        document.addEventListener('DOMContentLoaded', () => { startQuiz('literature'); }); //--- Change here category to start quiz default ---
+    </script>
+</body>
+</html>

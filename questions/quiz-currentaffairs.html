@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Student Quiz Portal</title>
+    <!-- Google Fonts: Poppins for a modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables for easy theme customization */
+        :root {
+            --primary-color: #007bff; /* नीले रंग का मुख्य रंग */
+            --secondary-color: #6c757d; /* ग्रे रंग का सहायक रंग */
+            --success-color: #28a745; /* हरे रंग का सफलता का रंग */
+            --danger-color: #dc3545; /* लाल रंग का खतरे का रंग */
+            --info-color: #17a2b8; /* नीले-हरे रंग का जानकारी का रंग */
+            --light-bg: #f8f9fa; /* हल्का पृष्ठभूमि रंग */
+            --dark-text: #343a40; /* गहरा टेक्स्ट रंग */
+            --border-color: #dee2e6; /* बॉर्डर का रंग */
+            --card-bg: #ffffff; /* कार्ड की पृष्ठभूमि */
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1); /* हल्की छाया */
+            --shadow-medium: 0 8px 15px rgba(0, 0, 0, 0.15); /* मध्यम छाया */
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* ऊपर से शुरू करें */
+            min-height: 100vh; /* कम से कम पूरी ऊंचाई */
+            box-sizing: border-box; /* पैडिंग और बॉर्डर को चौड़ाई में शामिल करें */
+        }
+
+        .container {
+            max-width: 900px; /* अधिकतम चौड़ाई */
+            width: 100%; /* पूरी चौड़ाई */
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px; /* गोल कोने */
+            box-shadow: var(--shadow-medium); /* मध्यम छाया */
+            text-align: center;
+            position: relative;
+        }
+
+        /* Logo Styling */
+        .logo-container {
+            margin-bottom: 20px; /* Logo aur heading ke beech space */
+            text-align: center;
+        }
+
+        .logo {
+            max-width: 150px; /* Logo ki adhiktam चौड़ाई */
+            height: auto; /* Anupat banae rakhne ke liye height auto */
+            border-radius: 8px; /* Logo ke liye thode gol kone */
+            box-shadow: var(--shadow-light); /* Logo ke liye halki shadow */
+        }
+
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            font-weight: 700; /* मोटा फ़ॉन्ट */
+            font-size: 2.5em; /* बड़ा फ़ॉन्ट */
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: 600;
+            font-size: 1.8em;
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        /* Common styles for different screens (category, quiz, score) */
+        .category-selection, .quiz-section, .score-section {
+            padding: 25px;
+            border-radius: 10px;
+            background-color: var(--light-bg);
+            border: 1px solid var(--border-color);
+            margin-top: 25px;
+            box-shadow: var(--shadow-light);
+        }
+
+        .category-buttons {
+            display: flex;
+            flex-wrap: wrap; /* बटन को नई लाइन पर जाने दें */
+            gap: 15px; /* बटन के बीच की जगह */
+            justify-content: center; /* बटन को केंद्र में लाएं */
+            margin-top: 20px;
+        }
+
+        .category-btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease; /* सहज ट्रांजीशन */
+            box-shadow: var(--shadow-light);
+        }
+
+        .category-btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .quiz-section {
+            display: none; /* शुरुआत में छिपा हुआ */
+            text-align: left;
+        }
+
+        .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow-light);
+        }
+
+        .question p {
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 1.15em;
+            color: var(--dark-text);
+        }
+
+        .options label {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px 15px;
+            background-color: var(--light-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+            font-size: 1em;
+            display: flex;
+            align-items: center; /* अलाइन आइटम */
+        }
+
+        .options label:hover {
+            background-color: #e9ecef;
+            border-color: var(--primary-color);
+        }
+
+        .options input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2); /* रेडियो बटन को थोड़ा बड़ा करें */
+        }
+
+        .submit-btn, .restart-btn {
+            display: block;
+            width: 100%;
+            padding: 12px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: var(--shadow-light);
+        }
+
+        .submit-btn:hover, .restart-btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .restart-btn {
+            background-color: var(--info-color); /* रीस्टार्ट बटन के लिए अलग रंग */
+        }
+        .restart-btn:hover {
+             background-color: #138496;
+        }
+
+        .score-section {
+            display: none; /* शुरुआत में छिपा हुआ */
+            text-align: center;
+        }
+
+        .score-section p {
+            font-size: 1.4em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--success-color);
+        }
+
+        .score-section p span {
+            color: var(--primary-color);
+        }
+
+        .correct-answers {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        .correct-answers h3 {
+            color: var(--success-color);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .correct-answers ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .correct-answers ul li {
+            margin-bottom: 12px;
+            padding: 10px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.95em;
+        }
+        .correct-answers ul li strong {
+            color: var(--dark-text);
+        }
+        .correct-answers ul li .your-answer {
+            color: var(--secondary-color);
+        }
+        .correct-answers ul li .correct-answer-text {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+
+        .timer {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: var(--danger-color);
+            margin-bottom: 15px;
+            padding: 8px 15px;
+            background-color: rgba(220, 53, 69, 0.1); /* हल्के लाल रंग की पृष्ठभूमि */
+            border-radius: 5px;
+            display: inline-block; /* टेक्स्ट के अनुसार चौड़ाई */
+        }
+
+        /* Past Scores section styling */
+        .past-scores {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--border-color);
+            text-align: left;
+        }
+
+        .past-scores h3 {
+            color: var(--info-color);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .past-scores ul {
+            list-style-type: disc; /* Bullet points for list */
+            padding-left: 20px;
+        }
+
+        .past-scores ul li {
+            margin-bottom: 8px;
+            background-color: transparent; /* Override card-bg */
+            border: none; /* Override border */
+            box-shadow: none; /* Override shadow */
+        }
+
+
+        /* Responsive Design for smaller screens */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 20px;
+                margin: 0; /* मोबाइल पर मार्जिन हटा दें */
+            }
+            h1 {
+                font-size: 2em;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+            .category-btn {
+                width: 100%; /* मोबाइल पर पूरी चौड़ाई */
+                padding: 10px;
+                font-size: 1em;
+            }
+            .question p {
+                font-size: 1em;
+            }
+            .options label {
+                padding: 8px 10px;
+            }
+            .submit-btn, .restart-btn {
+                font-size: 1.1em;
+            }
+            .logo {
+                max-width: 100px; /* मोबाइल पर लोगो को थोड़ा छोटा करें */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Logo Container -->
+        <div class="logo-container">
+            <img src="K:\ONLINE WORK\Website\Quiz\logo.png" alt="Quiz Portal Logo" class="logo">
+        </div>
+
+        <h1>क्विज़ पोर्टल में आपका स्वागत है!</h1>
+        <p id="main-instruction">अपना क्विज़ शुरू करने के लिए एक श्रेणी चुनें।</p>
+
+        <!-- श्रेणी चयन स्क्रीन (Category Selection Screen) -->
+        <div class="category-selection" id="category-selection-screen">
+            <h2>एक क्विज़ श्रेणी चुनें</h2>
+            <div class="category-buttons">
+                <!-- Buttons will be dynamically generated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- क्विज़ सेक्शन (शुरुआत में छिपा हुआ) (Quiz Section - hidden initially) -->
+        <div class="quiz-section" id="quiz-screen">
+            <h2 id="quiz-title"></h2>
+            <div class="timer">समय शेष: <span id="time-left"></span>s</div>
+            <form id="currentQuizForm"></form>
+            <button type="submit" class="submit-btn" id="submitQuizBtn">क्विज़ सबमिट करें</button>
+        </div>
+
+        <!-- स्कोर सेक्शन (शुरुआत में छिपा हुआ) (Score Section - hidden initially) -->
+        <div class="score-section" id="score-screen">
+            <h2>क्विज़ परिणाम</h2>
+            <p>आपका स्कोर: <span id="final-score-display">0</span>/<span id="total-questions-display">5</span></p>
+            <div class="correct-answers">
+                <h3>सही उत्तर:</h3>
+                <ul id="correct-answers-list"></ul>
+            </div>
+            <button class="restart-btn" id="restartQuizBtn">एक और क्विज़ लें</button>
+            <div class="past-scores" id="past-scores-display">
+                <h3>पिछला स्कोर इतिहास:</h3>
+                <ul id="past-scores-list"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // सभी क्विज़ डेटा यहाँ JavaScript ऑब्जेक्ट के रूप में परिभाषित है
+        const quizzesData = {
+            currentAffairs: {
+                title: "करंट अफेयर्स क्विज़",
+                timeLimit: 600,
+                questions: [
+				  { q: "G20 शिखर सम्मेलन 2023 का आयोजन किस देश में हुआ?", options: ["भारत", "इंडोनेशिया", "ब्राज़ील", "जर्मनी"], ans: "भारत" },
+				  { q: "चंद्रयान-3 मिशन को कब लॉन्च किया गया?", options: ["14 जुलाई 2023", "15 अगस्त 2022", "26 जनवरी 2023", "2 अक्टूबर 2023"], ans: "14 जुलाई 2023" },
+				  { q: "भारत का पहला सेमीकंडक्टर प्लांट किस राज्य में बन रहा है?", options: ["कर्नाटक", "गुजरात", "तेलंगाना", "महाराष्ट्र"], ans: "गुजरात" },
+				  { q: "2024 में लोकसभा चुनाव कितने चरणों में हुआ?", options: ["5", "6", "7", "4"], ans: "7" },
+				  { q: "2024 में ऑस्कर का सर्वश्रेष्ठ फिल्म पुरस्कार किसे मिला?", options: ["Oppenheimer", "Barbie", "The Whale", "Avatar 2"], ans: "Oppenheimer" },
+				  { q: "नवीनतम रक्षा मंत्री कौन हैं?", options: ["राजनाथ सिंह", "अमित शाह", "निर्मला सीतारमण", "एस. जयशंकर"], ans: "राजनाथ सिंह" },
+				  { q: "COP28 जलवायु सम्मेलन कहां हुआ?", options: ["पेरिस", "दुबई", "न्यूयॉर्क", "बर्लिन"], ans: "दुबई" },
+				  { q: "नए सेना प्रमुख (2024) कौन बने?", options: ["मनोज मुकुंद नरवणे", "मनोज पांडे", "अनिल चौहान", "बिपिन रावत"], ans: "मनोज पांडे" },
+				  { q: "बजट 2024 में किस सेक्टर को सबसे ज्यादा फंड मिला?", options: ["स्वास्थ्य", "रक्षा", "शिक्षा", "रेलवे"], ans: "रेलवे" },
+				  { q: "भारत के नए चुनाव आयुक्त (2024) कौन हैं?", options: ["राजीव कुमार", "अरुण गोयल", "सुशील चंद्रा", "अनूप चंद्र पांडे"], ans: "अरुण गोयल" },
+				  { q: "2024 में कौन सा देश NATO में शामिल हुआ?", options: ["स्वीडन", "फिनलैंड", "यूक्रेन", "आयरलैंड"], ans: "स्वीडन" },
+				  { q: "2023 का नोबेल शांति पुरस्कार किसे मिला?", options: ["नरेंद्र मोदी", "नरगेस मोहम्मदी", "अमर्त्य सेन", "ग्रेटा थनबर्ग"], ans: "नरगेस मोहम्मदी" },
+				  { q: "हाल ही में लॉन्च किया गया 'PM-eBus सेवा' किससे संबंधित है?", options: ["स्वास्थ्य", "परिवहन", "शिक्षा", "डिजिटल इंडिया"], ans: "परिवहन" },
+				  { q: "BharatGPT किसका प्रोजेक्ट है?", options: ["Google", "TCS", "Reliance", "IIT मद्रास और 8 कंपनियों का"], ans: "IIT मद्रास और 8 कंपनियों का" },
+				  { q: "अभी हाल ही में भारत में कितने नए जिले बनाए गए हैं (2024)?", options: ["5", "7", "10", "12"], ans: "7" },
+				  { q: "2023 में 'विश्व पर्यावरण दिवस' की थीम क्या थी?", options: ["Beat Plastic Pollution", "Save Trees", "Green Earth", "Zero Waste"], ans: "Beat Plastic Pollution" },
+				  { q: "कौन सी भारतीय महिला खिलाड़ी WPL की सबसे महंगी खिलाड़ी बनी?", options: ["स्मृति मंधाना", "हरमनप्रीत कौर", "शेफाली वर्मा", "जेमिमा रॉड्रिग्स"], ans: "स्मृति मंधाना" },
+				  { q: "हाल ही में लॉन्च किया गया 'NAIPUNYA' कार्यक्रम किससे संबंधित है?", options: ["स्वास्थ्य", "कौशल विकास", "डिजिटल भुगतान", "कृषि"], ans: "कौशल विकास" },
+				  { q: "FIFA World Cup 2030 की मेज़बानी कौन करेगा?", options: ["स्पेन, मोरक्को, पुर्तगाल", "कतर", "अर्जेंटीना", "जर्मनी"], ans: "स्पेन, मोरक्को, पुर्तगाल" },
+				  { q: "भारत का 100वां यूनिकॉर्न कौन सा बना?", options: ["Physics Wallah", "Zerodha", "Groww", "Slice"], ans: "Physics Wallah" },
+				  { q: "नवीनतम 'भारत रत्न' किसे मिला?", options: ["लालकृष्ण आडवाणी", "मोदी", "योगी", "रामनाथ कोविंद"], ans: "लालकृष्ण आडवाणी" },
+				  { q: "2024 के लोकसभा चुनाव की तारीख क्या है?", options: ["19 अप्रैल से", "10 अप्रैल से", "1 मई से", "15 मई से"], ans: "19 अप्रैल से" },
+				  { q: "चंद्रयान-3 ने सफल लैंडिंग कहां की?", options: ["उत्तर ध्रुव", "दक्षिण ध्रुव", "सूर्य की कक्षा", "चाँद के मध्य"], ans: "दक्षिण ध्रुव" },
+				  { q: "2023 का 'भारतीय फिल्म फेयर अवार्ड' किसे मिला?", options: ["RRR", "Jawan", "Pathaan", "Gadar 2"], ans: "RRR" },
+				  { q: "भारत की पहली महिला चीफ मिनिस्टर कौन बनीं जो तीन बार चुनी गईं?", options: ["ममता बनर्जी", "मायावती", "जयललिता", "शशिकला"], ans: "ममता बनर्जी" },
+				  { q: "विश्व हिंदी सम्मेलन 2023 कहां आयोजित हुआ?", options: ["फिजी", "दुबई", "भारत", "नेपाल"], ans: "फिजी" },
+				  { q: "2023 में देश का सबसे लंबा रेल पुल कहां बना?", options: ["बिहार", "उत्तर प्रदेश", "असम", "मणिपुर"], ans: "मणिपुर" },
+				  { q: "जनवरी 2024 में सबसे ज्यादा बिकने वाली इलेक्ट्रिक कार कौन सी थी?", options: ["Tata Nexon EV", "MG ZS EV", "Hyundai Kona", "Mahindra XUV400"], ans: "Tata Nexon EV" },
+				  { q: "2023 में 'मिस वर्ल्ड' का ताज किस देश को मिला?", options: ["भारत", "वेनेजुएला", "यूएसए", "पोलैंड"], ans: "पोलैंड" },
+				  { q: "प्रधानमंत्री मोदी द्वारा लॉन्च की गई 'PM Vishwakarma Yojana' किससे जुड़ी है?", options: ["शिल्पकारों के विकास से", "किसानों से", "डॉक्टर्स से", "छात्रवृत्ति से"], ans: "शिल्पकारों के विकास से" },
+				  { q: "हाल ही में लॉन्च हुआ भारत का डिजिटल करेंसी प्लेटफॉर्म है?", options: ["BHIM", "UPI+", "e-RUPI", "CBDC"], ans: "CBDC" },
+				  { q: "2023 में देश का पहला अंडरवाटर मेट्रो स्टेशन कहां बना?", options: ["मुंबई", "कोलकाता", "चेन्नई", "पुणे"], ans: "कोलकाता" },
+				  { q: "हाल ही में भारत में कौन सी नई संसद इमारत बनी?", options: ["सेंट्रल विस्टा", "लोकसभा टावर", "नया भवन", "नेशनल असेंबली"], ans: "सेंट्रल विस्टा" },
+				  { q: "2023 में किस खिलाड़ी को ‘लॉरियस स्पोर्ट्समैन ऑफ द ईयर’ मिला?", options: ["नोवाक जोकोविच", "लियोनेल मेसी", "विराट कोहली", "रफाएल नडाल"], ans: "लियोनेल मेसी" },
+				  { q: "2023 में कौन सा राज्य शराबबंदी हटा चुका है?", options: ["बिहार", "गुजरात", "मिजोरम", "मणिपुर"], ans: "मणिपुर" },
+				  { q: "AIIMS का नया कैंपस किस राज्य में खोला गया?", options: ["उत्तराखंड", "हरियाणा", "झारखंड", "हिमाचल प्रदेश"], ans: "हरियाणा" },
+				  { q: "यूपीआई अंतरराष्ट्रीय स्तर पर किस देश में शुरू हुआ?", options: ["सिंगापुर", "जापान", "यूएसए", "फ्रांस"], ans: "सिंगापुर" },
+				  { q: "अभी हाल ही में लॉन्च की गई UPI सेवा को भारत में क्या नाम दिया गया?", options: ["BharatPay", "UPI Lite", "DigiPay", "PayIndia"], ans: "UPI Lite" },
+				  { q: "हाल ही में कौन सी महिला SC जज बनीं?", options: ["बी.वी. नागरत्ना", "लीला सेठ", "रीतू राज", "गीता गोपीनाथ"], ans: "बी.वी. नागरत्ना" },
+				  { q: "हाल ही में भारत का किस राज्य में पहला वॉटर मेट्रो शुरू हुआ?", options: ["केरल", "गोवा", "तमिलनाडु", "गुजरात"], ans: "केरल" },
+				  { q: "‘Digital India Act’ किस वर्ष लागू होगा?", options: ["2023", "2024", "2025", "2026"], ans: "2024" },
+				  { q: "किस खिलाड़ी ने सबसे तेज 50 अंतरराष्ट्रीय शतक लगाए?", options: ["रोहित शर्मा", "विराट कोहली", "डेविड वॉर्नर", "सूर्यकुमार यादव"], ans: "विराट कोहली" },
+				  { q: "2023 में किस देश ने भारत के साथ पहला रुपया-रियाल व्यापार समझौता किया?", options: ["संयुक्त अरब अमीरात", "सऊदी अरब", "रूस", "श्रीलंका"], ans: "सऊदी अरब" },
+				  { q: "हाल ही में किस शहर में ISRO का मानव अंतरिक्ष मिशन Gaganyaan का परीक्षण हुआ?", options: ["श्रीहरिकोटा", "बेंगलुरु", "मुंबई", "चेन्नई"], ans: "श्रीहरिकोटा" },
+				  { q: "Digital Personal Data Protection Act किस वर्ष पास हुआ?", options: ["2021", "2022", "2023", "2024"], ans: "2023" },
+				  { q: "हाल में जारी Global Hunger Index 2023 में भारत की रैंक क्या रही?", options: ["101", "107", "111", "119"], ans: "111" },
+				  { q: "2023 में भारत का कौन सा राज्य सबसे अधिक एक्सपोर्ट करता है?", options: ["गुजरात", "महाराष्ट्र", "तमिलनाडु", "कर्नाटक"], ans: "गुजरात" },
+				  { q: "2025 में IPL की विजेता टीम कौन बनी?", options: ["CSK", "KKR", "MI", "RCB"], ans: "RCB" },
+				  { q: "भारत का 2024 का आम बजट किसने प्रस्तुत किया?", options: ["निर्मला सीतारमण", "अमित शाह", "पीयूष गोयल", "नरेंद्र मोदी"], ans: "निर्मला सीतारमण" },
+				  { q: "हाल ही में भारत ने किस देश के साथ चंद्र अनुसंधान सहयोग समझौता किया?", options: ["रूस", "फ्रांस", "अमेरिका (NASA)", "चीन"], ans: "अमेरिका (NASA)" }
+
+                ]
+            },
+            
+        };
+
+        // HTML तत्वों के संदर्भ (References to HTML elements)
+        const categorySelectionScreen = document.getElementById('category-selection-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const scoreScreen = document.getElementById('score-screen');
+        const quizTitle = document.getElementById('quiz-title');
+        const currentQuizForm = document.getElementById('currentQuizForm');
+        const submitQuizBtn = document.getElementById('submitQuizBtn');
+        const restartQuizBtn = document.getElementById('restartQuizBtn');
+        const finalScoreDisplay = document.getElementById('final-score-display');
+        const totalQuestionsDisplay = document.getElementById('total-questions-display');
+        const correctAnswersList = document.getElementById('correct-answers-list');
+        const timeLeftSpan = document.getElementById('time-left');
+        const mainInstruction = document.getElementById('main-instruction');
+        const categoryButtonsContainer = document.querySelector('.category-buttons');
+        const pastScoresList = document.getElementById('past-scores-list');
+
+        let currentQuizCategory = ''; // वर्तमान क्विज़ श्रेणी
+        let timerInterval; // टाइमर इंटरवल आईडी
+        let timeRemaining; // शेष समय
+        let selectedAnswers = {}; // उपयोगकर्ता द्वारा चुने गए उत्तरों को स्टोर करने के लिए
+        let displayedQuestionsOrder = []; // प्रदर्शित प्रश्नों के क्रम को स्टोर करने के लिए
+
+        // --- सहायक फ़ंक्शन (Utility Functions) ---
+
+        // एक सरणी को शफ़ल करने का फ़ंक्शन (Fisher-Yates algorithm)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // --- क्विज़ प्रवाह फ़ंक्शन (Quiz Flow Functions) ---
+
+        // श्रेणी बटन को गतिशील रूप से उत्पन्न करने का फ़ंक्शन
+        function generateCategoryButtons() {
+            categoryButtonsContainer.innerHTML = ''; // मौजूदा बटन साफ़ करें
+            for (const category in quizzesData) {
+                const button = document.createElement('button');
+                button.classList.add('category-btn');
+                button.setAttribute('data-category', category);
+                button.textContent = quizzesData[category].title.replace(' क्विज़', ''); // 'क्विज़' शब्द हटाकर श्रेणी का नाम प्रदर्शित करें
+                button.addEventListener('click', () => {
+                    startQuiz(category); // बटन क्लिक पर क्विज़ शुरू करें
+                });
+                categoryButtonsContainer.appendChild(button);
+            }
+        }
+
+        // क्विज़ शुरू करने का फ़ंक्शन
+        function startQuiz(category) {
+            currentQuizCategory = category;
+            const quizData = quizzesData[category];
+
+            if (!quizData) {
+                console.error("इस श्रेणी के लिए क्विज़ डेटा नहीं मिला:", category);
+                return;
+            }
+
+            // नए क्विज़ के लिए चुने गए उत्तरों और प्रदर्शित प्रश्नों के क्रम को रीसेट करें
+            selectedAnswers = {};
+            displayedQuestionsOrder = [];
+
+            // प्रश्नों को शफ़ल करें
+            const shuffledQuestions = shuffleArray([...quizData.questions]);
+            displayedQuestionsOrder = shuffledQuestions; // शफ़ल किए गए क्रम को स्टोर करें
+
+            quizTitle.textContent = quizData.title; // क्विज़ शीर्षक सेट करें
+            currentQuizForm.innerHTML = ''; // पिछले प्रश्नों को साफ़ करें
+
+            // प्रत्येक शफ़ल किए गए प्रश्न के लिए HTML उत्पन्न करें
+            displayedQuestionsOrder.forEach((qData, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+
+                const questionP = document.createElement('p');
+                // LaTeX गणितीय अभिव्यक्तियों के लिए innerHTML का उपयोग करें
+                questionP.innerHTML = `${index + 1}. ${qData.q}`;
+                questionDiv.appendChild(questionP);
+
+                const optionsDiv = document.createElement('div');
+                optionsDiv.classList.add('options');
+
+                // विकल्पों को शफ़ल करें
+                const shuffledOptions = shuffleArray([...qData.options]);
+
+                shuffledOptions.forEach((optionText) => {
+                    const label = document.createElement('label');
+                    const radio = document.createElement('input');
+                    radio.type = 'radio';
+                    radio.name = `q${index}`; // प्रत्येक प्रश्न समूह के लिए अद्वितीय नाम
+                    radio.value = optionText; // पूर्ण विकल्प टेक्स्ट को मान के रूप में स्टोर करें
+                    radio.addEventListener('change', (e) => {
+                        selectedAnswers[index] = e.target.value; // इस प्रश्न इंडेक्स के लिए चुने गए उत्तर को स्टोर करें
+                    });
+
+                    label.appendChild(radio);
+                    label.appendChild(document.createTextNode(optionText));
+                    optionsDiv.appendChild(label);
+                });
+
+                questionDiv.appendChild(optionsDiv);
+                currentQuizForm.appendChild(questionDiv);
+            });
+
+            // श्रेणी चयन को छिपाएं, क्विज़ दिखाएं
+            categorySelectionScreen.style.display = 'none';
+            mainInstruction.style.display = 'none';
+            quizScreen.style.display = 'block';
+            scoreScreen.style.display = 'none'; // सुनिश्चित करें कि स्कोर स्क्रीन छिपी हुई है
+
+            // टाइमर शुरू करें
+            startTimer(quizData.timeLimit);
+        }
+
+        // टाइमर शुरू करने का फ़ंक्शन
+        function startTimer(duration) {
+            clearInterval(timerInterval); // किसी भी मौजूदा टाइमर को साफ़ करें
+            timeRemaining = duration;
+            timeLeftSpan.textContent = timeRemaining;
+
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                timeLeftSpan.textContent = timeRemaining;
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    submitQuiz(); // समय समाप्त होने पर स्वतः सबमिट करें
+                    // alert की जगह कस्टम मैसेज दिखाएं
+                    const messageBox = document.createElement('div');
+                    messageBox.style.cssText = `
+                        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                        background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;
+                        padding: 20px; border-radius: 8px; z-index: 1000; box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                    `;
+                    messageBox.innerHTML = `<strong>समय समाप्त हो गया है!</strong> आपका क्विज़ सबमिट कर दिया गया है।`;
+                    document.body.appendChild(messageBox);
+                    setTimeout(() => messageBox.remove(), 3000); // 3 सेकंड बाद मैसेज हटा दें
+                }
+            }, 1000);
+        }
+
+        // क्विज़ सबमिट करने का फ़ंक्शन
+        function submitQuiz() {
+            clearInterval(timerInterval); // टाइमर रोकें
+
+            const quizData = quizzesData[currentQuizCategory];
+            let score = 0;
+            const correctAnswersHtml = [];
+            const totalQuestions = displayedQuestionsOrder.length;
+
+            // प्रत्येक प्रश्न के लिए स्कोर की गणना करें और सही उत्तर HTML जेनरेट करें
+            displayedQuestionsOrder.forEach((qData, index) => {
+                const correctAnswer = qData.ans;
+                const questionText = qData.q;
+                const userSelectedAnswer = selectedAnswers[index] || "उत्तर नहीं दिया गया"; // यदि कोई उत्तर नहीं चुना गया है
+
+                let isCorrect = (userSelectedAnswer === correctAnswer);
+                if (isCorrect) {
+                    score++;
+                }
+
+                correctAnswersHtml.push(`
+                    <li>
+                        <strong>${index + 1}. ${questionText}</strong> <br>
+                        <span class="your-answer">आपका उत्तर: ${userSelectedAnswer}</span>
+                        <span style="color: ${isCorrect ? 'var(--success-color)' : 'var(--danger-color)'}; font-weight: 600;">(${isCorrect ? 'सही' : 'गलत'})</span><br>
+                        <span class="correct-answer-text">सही उत्तर: ${correctAnswer}</span>
+                    </li>
+                `);
+            });
+
+            finalScoreDisplay.textContent = score; // अंतिम स्कोर प्रदर्शित करें
+            totalQuestionsDisplay.textContent = totalQuestions; // कुल प्रश्नों की संख्या प्रदर्शित करें
+            correctAnswersList.innerHTML = correctAnswersHtml.join(''); // सही उत्तरों की सूची प्रदर्शित करें
+
+            // स्कोर को लोकल स्टोरेज में सेव करें
+            saveScoreToLocalStorage(currentQuizCategory, score, totalQuestions);
+            displayPastScores(currentQuizCategory); // पिछला स्कोर इतिहास प्रदर्शित करें
+
+            // क्विज़ को छिपाएं, स्कोर दिखाएं
+            quizScreen.style.display = 'none';
+            scoreScreen.style.display = 'block';
+        }
+
+        // क्विज़ रीस्टार्ट करने का फ़ंक्शन
+        function restartQuiz() {
+    scoreScreen.style.display = 'none';
+    startQuiz('currentAffairs');
+}
+
+        // --- लोकल स्टोरेज फ़ंक्शन (Local Storage Functions) ---
+
+        // स्कोर को लोकल स्टोरेज में सेव करें
+        function saveScoreToLocalStorage(category, score, total) {
+            // 'quizScores' नामक एक मुख्य कुंजी के तहत सभी क्विज़ के स्कोर को स्टोर करें
+            const scores = JSON.parse(localStorage.getItem('quizScores')) || {};
+            if (!scores[category]) {
+                scores[category] = []; // यदि श्रेणी मौजूद नहीं है तो एक नया सरणी बनाएं
+            }
+            const timestamp = new Date().toLocaleString('hi-IN'); // वर्तमान दिनांक और समय (भारतीय स्थानीय सेटिंग में)
+            scores[category].push({ score: score, total: total, timestamp: timestamp });
+            localStorage.setItem('quizScores', JSON.stringify(scores));
+            console.log(`स्कोर सहेजा गया: श्रेणी - ${category}, स्कोर - ${score}/${total}`);
+        }
+
+        // पिछले स्कोर इतिहास को प्रदर्शित करें
+        function displayPastScores(category) {
+            const scores = JSON.parse(localStorage.getItem('quizScores')) || {};
+            const categoryScores = scores[category] || [];
+            pastScoresList.innerHTML = ''; // पिछले स्कोर सूची को साफ़ करें
+
+            if (categoryScores.length === 0) {
+                pastScoresList.innerHTML = '<li>कोई पिछला स्कोर नहीं मिला।</li>';
+            } else {
+                // Display latest 5 scores if many, or all if less than 5
+                const scoresToDisplay = categoryScores.slice(-5); // Get the last 5 entries
+
+                scoresToDisplay.forEach((s, index) => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `प्रयास ${categoryScores.length - scoresToDisplay.length + index + 1}: ${s.score}/${s.total} दिनांक ${s.timestamp}`;
+                    pastScoresList.appendChild(listItem);
+                });
+            }
+        }
+
+        // --- इवेंट लिसनर (Event Listeners) ---
+
+        // क्विज़ सबमिट बटन
+        submitQuizBtn.addEventListener('click', submitQuiz);
+
+        // क्विज़ रीस्टार्ट बटन
+        restartQuizBtn.addEventListener('click', restartQuiz);
+
+        // पेज लोड होने पर: श्रेणी बटन जेनरेट करें
+        document.addEventListener('DOMContentLoaded', () => { startQuiz('currentAffairs'); });
+    </script>
+</body>
+</html>
