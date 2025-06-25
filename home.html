@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Student Quiz Portal</title>
+    <!-- Google Fonts: Poppins for a modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables for easy theme customization */
+        :root {
+            --primary-color: #007bff; /* नीले रंग का मुख्य रंग */
+            --secondary-color: #6c757d; /* ग्रे रंग का सहायक रंग */
+            --success-color: #28a745; /* हरे रंग का सफलता का रंग */
+            --danger-color: #dc3545; /* लाल रंग का खतरे का रंग */
+            --info-color: #17a2b8; /* नीले-हरे रंग का जानकारी का रंग */
+            --light-bg: #f8f9fa; /* हल्का पृष्ठभूमि रंग */
+            --dark-text: #343a40; /* गहरा टेक्स्ट रंग */
+            --border-color: #dee2e6; /* बॉर्डर का रंग */
+            --card-bg: #ffffff; /* कार्ड की पृष्ठभूमि */
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1); /* हल्की छाया */
+            --shadow-medium: 0 8px 15px rgba(0, 0, 0, 0.15); /* मध्यम छाया */
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* ऊपर से शुरू करें */
+            min-height: 100vh; /* कम से कम पूरी ऊंचाई */
+            box-sizing: border-box; /* पैडिंग और बॉर्डर को चौड़ाई में शामिल करें */
+        }
+
+        .container {
+            max-width: 900px; /* अधिकतम चौड़ाई */
+            width: 100%; /* पूरी चौड़ाई */
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px; /* गोल कोने */
+            box-shadow: var(--shadow-medium); /* मध्यम छाया */
+            text-align: center;
+            position: relative;
+        }
+
+        /* Logo Styling */
+        .logo-container {
+            margin-bottom: 20px; /* Logo aur heading ke beech space */
+            text-align: center;
+        }
+
+        .logo {
+            max-width: 150px; /* Logo ki adhiktam चौड़ाई */
+            height: auto; /* Anupat banae rakhne ke liye height auto */
+            border-radius: 8px; /* Logo ke liye thode gol kone */
+            box-shadow: var(--shadow-light); /* Logo ke liye halki shadow */
+        }
+
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            font-weight: 700; /* मोटा फ़ॉन्ट */
+            font-size: 2.5em; /* बड़ा फ़ॉन्ट */
+        }
+		h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: 600;
+            font-size: 1.5em;
+        }
+
+        p {
+            color: var(--info-color);
+			margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        /* Responsive Design for smaller screens */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 20px;
+                margin: 0; /* मोबाइल पर मार्जिन हटा दें */
+            }
+            h1 {
+                font-size: 2em;
+            }
+           
+            .logo {
+                max-width: 100px; /* मोबाइल पर लोगो को थोड़ा छोटा करें */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Logo Container -->
+        <div class="logo-container">
+            <img src="image\logo.png" alt="Quiz Portal Logo" class="logo">
+        </div>
+
+        <h1>क्विज़ पोर्टल में आपका स्वागत है!</h1>
+		<p> इस क्विज पोर्टल के प्रत्येक श्रेणियों में 50 प्रश्नों का समूह है जिसके लिए 10 मिनट का समय निर्धारित किया गया है. समय समाप्त होने पर प्रश्नोत्तरी स्वतः सबमिट हो जाति है.<p>
+		<p> <strong> तो आईये अपनी जानकारी की जाँच करें: </p> 
+        <h2>अपना क्विज़ शुरू करने के लिए बाईं ओर से एक श्रेणी चुनें।</h2>
+
+        
+</body>
+</html>
