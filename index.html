@@ -226,32 +226,31 @@
       }
       menu.classList.toggle("show");
     }
-	  function loadPage(pageUrl) {
-    document.getElementById('content-frame').src = pageUrl;
-    toggleMenu(false);
-
-	// 📱 Hide sidebar on small screens when quiz is selected
-		if (window.innerWidth <= 768 && pageUrl.includes("questions/")) {
-		  document.getElementById('sidebar').style.display = 'none';
-		  document.getElementById('main-content').style.width = '100%';
-		}
+   function loadPage(pageUrl) {
+	  document.getElementById('content-frame').src = pageUrl;
+	  toggleMenu(false);
+	
+	  // 📱 केवल mobile पर ही sidebar छुपाएं
+	  if (window.innerWidth <= 768 && pageUrl.includes("questions/")) {
+	    document.getElementById('sidebar').style.display = 'none';
+	    document.getElementById('main-content').style.width = '100%';
+	  } else {
+	    // 🖥️ Desktop view के लिए sidebar और width को restore करें
+	    document.getElementById('sidebar').style.display = 'block';
+	    document.getElementById('main-content').style.width = '75%';
 	  }
+   }
 
-	  function showSidebar() {
-		document.getElementById('sidebar').style.display = 'block';
-		if (window.innerWidth > 768) {
-		  document.getElementById('main-content').style.width = '75%';
-		} else {
-		  document.getElementById('main-content').style.width = '100%';
-		}
+   function showSidebar() {
+	  document.getElementById('sidebar').style.display = 'block';
+	
+	  if (window.innerWidth > 768) {
+	    document.getElementById('main-content').style.width = '75%';
+	  } else {
+	    document.getElementById('main-content').style.width = '100%';
 	  }
-
-	  // Listen for message from iframe to show sidebar again
-	  window.addEventListener('message', function(e) {
-		if (e.data === 'showSidebar') {
-		  showSidebar();
-		}
-	  });
+  }
+	 
   </script>
 
 </body>
