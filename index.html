@@ -182,9 +182,9 @@
   </div>
 
   <!-- Main Layout -->
-  <div class="container">
+  <div class="main-content" id="main-content">
     <!-- Sidebar -->
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
       <div class="logo-container">
         <img src="images/logo.png" alt="Logo" class="logo"/>
       </div>
@@ -226,6 +226,32 @@
       }
       menu.classList.toggle("show");
     }
+	  function loadPage(pageUrl) {
+    document.getElementById('content-frame').src = pageUrl;
+    toggleMenu(false);
+
+	// 📱 Hide sidebar on small screens when quiz is selected
+		if (window.innerWidth <= 768 && pageUrl.includes("questions/")) {
+		  document.getElementById('sidebar').style.display = 'none';
+		  document.getElementById('main-content').style.width = '100%';
+		}
+	  }
+
+	  function showSidebar() {
+		document.getElementById('sidebar').style.display = 'block';
+		if (window.innerWidth > 768) {
+		  document.getElementById('main-content').style.width = '75%';
+		} else {
+		  document.getElementById('main-content').style.width = '100%';
+		}
+	  }
+
+	  // Listen for message from iframe to show sidebar again
+	  window.addEventListener('message', function(e) {
+		if (e.data === 'showSidebar') {
+		  showSidebar();
+		}
+	  });
   </script>
 
 </body>
