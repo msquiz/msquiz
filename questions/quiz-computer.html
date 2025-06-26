@@ -599,6 +599,8 @@
             // क्विज़ को छिपाएं, स्कोर दिखाएं
             quizScreen.style.display = 'none';
             scoreScreen.style.display = 'block';
+	    // index.html को बताएं कि sidebar वापस दिखाए
+	    window.parent.postMessage('showSidebar', '*');
         }
 
         // क्विज़ रीस्टार्ट करने का फ़ंक्शन
