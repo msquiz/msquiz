@@ -348,10 +348,10 @@
                 <ul id="correct-answers-list"></ul>
             </div>
             	<button class="restart-btn" id="restartQuizBtn">पुनः प्रयास करें </button>
-		<!-- ✅ नया बटन: एक और quiz चुनने के लिए -->
-			<br><button id="another-quiz-btn" onclick="window.parent.postMessage('showSidebar', '*')" style="display:none; background-color:#28a745; color:white; padding:10px 20px; border:none; border-radius:5px; margin-top:15px;">🚀 नई श्रेणी चुनें</button>
-
-	   <div class="past-scores" id="past-scores-display">
+		<button id="another-quiz-btn" onclick="showCategoriesAgain()" style="display:none;">
+				🚀 एक और क्विज़ चुनें
+				</button>
+		<div class="past-scores" id="past-scores-display">
                 <h3>पिछला स्कोर इतिहास:</h3>
                 <ul id="past-scores-list"></ul>
             </div>
@@ -602,13 +602,13 @@
             // क्विज़ को छिपाएं, स्कोर दिखाएं
             quizScreen.style.display = 'none';
             scoreScreen.style.display = 'block';
-	    // ✅ Sidebar दिखाने का सिग्नल parent को भेजें
-			  window.parent.postMessage('showSidebar', '*');
-
-			  // ✅ नया बटन दिखाएं
-			  const anotherQuizBtn = document.getElementById('another-quiz-btn');
-			  if (anotherQuizBtn) anotherQuizBtn.style.display = 'inline-block';
-        }
+	}
+	    function showCategoriesAgain() {
+		// Sidebar दिखाएं
+		window.parent.postMessage('showSidebar', '*');
+		// iframe को homepage पर redirect करें
+		window.parent.postMessage({ action: 'loadPage', url: 'home.html' }, '*');
+	}
 
         // क्विज़ रीस्टार्ट करने का फ़ंक्शन
         function restartQuiz() {
