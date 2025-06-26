@@ -250,6 +250,16 @@
 		document.getElementById('main-content').style.width = '100%';
 	  }
 	}
+	window.addEventListener('message', function(e) {
+	  if (e.data === 'showSidebar') {
+	    showSidebar();
+	  }
+
+  // अगर iframe से loadPage का request आये तो iframe को reload करें
+	  if (typeof e.data === 'object' && e.data.action === 'loadPage') {
+	    loadPage(e.data.url);
+	  }
+	});
 
   </script>
 
